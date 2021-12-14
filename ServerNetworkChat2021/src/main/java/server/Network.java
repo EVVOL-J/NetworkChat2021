@@ -39,16 +39,16 @@ public class Network {
         return authService;
     }
 
-    public void addClient(ClientHandler clientHandler) {
+    public synchronized void addClient(ClientHandler clientHandler) {
         clientHandlerList.add(clientHandler);
     }
 
-    public void remove(ClientHandler clientHandler) {
+    public synchronized void remove(ClientHandler clientHandler) {
         clientHandlerList.remove(clientHandler);
 
     }
 
-    public void broadcastMessage(String message, ClientHandler clientHandler) throws IOException {
+    public synchronized void broadcastMessage(String message, ClientHandler clientHandler) throws IOException {
         for (ClientHandler client:clientHandlerList){
                 if(client.getUserName().equals(clientHandler.getUserName())){
                     client.writeMessage("Me: "+message);
@@ -56,5 +56,13 @@ public class Network {
                 else client.writeMessage(clientHandler.getUserName()+": "+message);
             }
 
+    }
+    public synchronized void printListClientHandler(){
+        for (ClientHandler clientHandler:clientHandlerList)
+        System.out.println(clientHandler.getUserName());
+    }
+
+    public void sendInfoMessage(String connection_close) {
+        Command
     }
 }

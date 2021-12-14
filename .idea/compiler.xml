@@ -6,7 +6,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="ClientNetworkChat" />
         <module name="ServerNetworkChat2021" />
+        <module name="NetworkClientServerCommand" />
       </profile>
     </annotationProcessing>
   </component>

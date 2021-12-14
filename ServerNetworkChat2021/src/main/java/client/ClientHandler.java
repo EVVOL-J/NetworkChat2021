@@ -2,9 +2,7 @@ package client;
 
 import server.Network;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 
 public class ClientHandler {
@@ -12,8 +10,8 @@ public class ClientHandler {
     private static final String END_COMMAND ="/end" ;
     private final Network network;
     private final Socket socket;
-    private DataInputStream in;
-    private DataOutputStream out;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
     private static final String AUTH_COMMAND = "/auth";
     private static final String AUTH_OK_COMMAND = "/authOK";
     private static final String MESSAGE_COMMAND = "/mess";
@@ -28,14 +26,15 @@ public class ClientHandler {
     public void start() {
         new Thread(() -> {
             try {
-                in = (DataInputStream) socket.getInputStream();
-                out = (DataOutputStream) socket.getOutputStream();
+                in = new ObjectInputStream(socket.getInputStream());
+                out = new ObjectOutputStream(socket.getOutputStream());
                 workWithClient();
             } catch (IOException e) {
                 System.out.println("Error create input/output stream socket");
             } finally {
                 try {
                     socket.close();
+                    network.sendInfoMessage("Connection close");
                 } catch (IOException e) {
                     System.out.println("error socket close");
                 }
@@ -53,6 +52,7 @@ public class ClientHandler {
         }finally {
             System.out.println("Connection close");
             network.remove(this);
+            network.printListClientHandler();
         }
 
 
@@ -76,7 +76,7 @@ public class ClientHandler {
     private void auth() throws IOException {
         while (true) {
 
-            out.writeUTF("Enter login and password");
+            //out.writeUTF("Enter login and password");
             String message = in.readUTF();
             if (message.startsWith(AUTH_COMMAND)) {
                 String[] messageArr = message.split(" ");
@@ -86,7 +86,7 @@ public class ClientHandler {
                     this.userName = network.getAuthService().getUserNameByLoginAndPassword(login, pass);
                     if (userName != null) {
                         network.addClient(this);
-                        out.writeUTF(AUTH_OK_COMMAND + userName);
+                        out.writeUTF(AUTH_OK_COMMAND +" "+ userName);
                         System.out.println("Auth client is success");
                         break;
                     }
