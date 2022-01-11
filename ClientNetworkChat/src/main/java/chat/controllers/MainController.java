@@ -1,14 +1,19 @@
 package chat.controllers;
 
 
-import chat.personData.CollectionUsers;
 import chat.network.Network;
+import command.data.Chat;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
+
 
 public class MainController {
-    private CollectionUsers collectionUsers;
+
     private Network network;
 
     @FXML
@@ -31,16 +36,16 @@ public class MainController {
 
 
     public void initialize() {
-        collectionUsers =new CollectionUsers();
         textField.setOnAction(actionEvent -> sendMessage());
         sendButton.setOnAction(actionEvent -> sendMessage());
-        userList.setItems(collectionUsers.getPersonList());
+
     }
 
     public void sendMessage() {
         String message=textField.getText()+"\n";
-        appendMessage(message);
-        network.write(message);
+       // userList.getSelectionModel().getSelectedItem();
+        //appendMessage(message);
+        network.write(null, message);
     }
 
     public void appendMessage(String message){
@@ -61,5 +66,23 @@ public class MainController {
     public void setUserInfo(String userMessage) {
         userInfo.setText(userMessage);
     }
+
+    public void reloadChatList(List<Chat> chats){
+        network.getCollectionOfChats().insertChats(chats);
+        userList.setItems(network.getCollectionOfChats().getPersonList());}
+
+    public void reloadUserList(Set<String> userNames){
+        network.getCollectionOfChats().setUserNames(userNames);
+    }
+
+    public void createNewChat(ActionEvent actionEvent) {
+        try {
+            network.getNetworkChat().initAndShowNewChatWindow();
+        } catch (IOException e) {
+            System.out.println("Ошибка создания chat окна");
+        }
+    }
+
+
 }
 

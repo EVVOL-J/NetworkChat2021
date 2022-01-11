@@ -2,6 +2,7 @@ package chat;
 
 import chat.controllers.AuthController;
 import chat.controllers.MainController;
+import chat.controllers.NewChatController;
 import chat.network.Network;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -16,6 +17,7 @@ import java.io.IOException;
 public class NetworkChat extends Application {
     private Stage primaryStage;
     private Stage authStage;
+    private Stage chatStage;
     private Network network;
 
     @Override
@@ -64,6 +66,21 @@ public class NetworkChat extends Application {
         authController.setNetwork(network);
         authStage.show();
     }
+
+    public void initAndShowNewChatWindow() throws IOException {
+        FXMLLoader chatLoader=new FXMLLoader();
+        chatLoader.setLocation((NetworkChat.class.getResource("/views/newChat.fxml")));
+        Parent chatParent=chatLoader.load();
+        chatStage=new Stage();
+        chatStage.setTitle("New chat");
+        Scene chatScene=new Scene(chatParent);
+        chatStage.setScene(chatScene);
+        NewChatController chatController=chatLoader.getController();
+        chatController.setNetwork(network);
+        chatController.listOfUsers.setItems(network.getCollectionOfChats().getUserNames());
+        chatStage.show();
+    }
+
 
     public static void main(String[] args) {
         launch(args);

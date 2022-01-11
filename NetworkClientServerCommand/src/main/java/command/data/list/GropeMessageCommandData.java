@@ -1,4 +1,4 @@
-package commandData.list;
+package command.data.list;
 
 import java.io.Serializable;
 import java.util.List;

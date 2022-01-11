@@ -1,4 +1,4 @@
-package commandData;
+package command.data;
 
 public enum TypeOfCommand {
     AUTH,
@@ -7,6 +7,7 @@ public enum TypeOfCommand {
     ERROR_MESSAGE,
     PRIVATE_MESSAGE,
     GROPE_MESSAGE,
-    USER_LIST_MESSAGE
+    USER_SET_MESSAGE,
+    USER_CHATS
 
 }

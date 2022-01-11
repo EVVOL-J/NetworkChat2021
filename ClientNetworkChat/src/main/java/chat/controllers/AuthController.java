@@ -23,7 +23,7 @@ public class AuthController {
             NetworkChat.showNetworkError("Login and password should be not empty!", "Auth error");
             return;
         }
-        String username=network.sendAuthCommand(login.getText(),password.getText());
+        String username=network.sendAuthCommand(login.getText().strip(),password.getText());
         if(username!=null){
             try {
                 network.getNetworkChat().initAndShowMainWindow(username);
@@ -31,7 +31,7 @@ public class AuthController {
             } catch (IOException e) {
                 System.out.println("Ошибка создания main окна");
             }
-        } else NetworkChat.showNetworkError("Incorrect login or password", "Auth error");
+        } //else NetworkChat.showNetworkError("Incorrect login or password", "Auth error");
 
     }
 

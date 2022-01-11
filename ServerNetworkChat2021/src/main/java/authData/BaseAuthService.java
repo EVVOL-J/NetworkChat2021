@@ -1,5 +1,6 @@
 package authData;
 
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,6 +27,15 @@ public class BaseAuthService implements AuthService {
                     return user.getUserName();
             }
         return null;
+    }
+
+    @Override
+    public Set<String> getUserNames() {
+        Set<String> userNames=new HashSet<>();
+        for (User user:userSet){
+            userNames.add(user.getUserName());
+        }
+        return userNames;
     }
 
     @Override
