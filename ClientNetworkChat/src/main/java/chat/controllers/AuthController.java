@@ -2,10 +2,13 @@ package chat.controllers;
 
 import chat.NetworkChat;
 import chat.network.Network;
+import command.Command;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseDragEvent;
+import javafx.scene.input.MouseEvent;
 
 import java.io.IOException;
 
@@ -19,11 +22,11 @@ public class AuthController {
 
     @FXML
     public void sendAuthCommand(ActionEvent actionEvent) {
-        if(password==null||login==null){
+        if(password.getText()==null||login.getText()==null||password.getText().equals("")||login.getText().equals("")){
             NetworkChat.showNetworkError("Login and password should be not empty!", "Auth error");
             return;
         }
-        String username=network.sendAuthCommand(login.getText().strip(),password.getText());
+        String username=network.sendCommand(Command.authCommand(login.getText().strip(),password.getText()));
         if(username!=null){
             try {
                 network.getNetworkChat().initAndShowMainWindow(username);
@@ -39,4 +42,12 @@ public class AuthController {
         this.network = network;
     }
 
+
+    public void createAccount(MouseEvent mouseEvent) {
+        try {
+            network.getNetworkChat().initAndShowNewUserWindow();
+        } catch (IOException e) {
+            System.out.println("Ошибка создания окна нового пользователя");
+        }
+    }
 }

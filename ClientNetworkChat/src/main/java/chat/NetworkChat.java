@@ -3,6 +3,7 @@ package chat;
 import chat.controllers.AuthController;
 import chat.controllers.MainController;
 import chat.controllers.NewChatController;
+import chat.controllers.NewUserController;
 import chat.network.Network;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +19,7 @@ public class NetworkChat extends Application {
     private Stage primaryStage;
     private Stage authStage;
     private Stage chatStage;
+    private Stage userStage;
     private Network network;
 
     @Override
@@ -50,6 +52,8 @@ public class NetworkChat extends Application {
         MainController controller=loader.getController();
         controller.setNetwork(network);
         network.read(controller);
+        network.getCollectionOfChats().setThisUserName(username);
+        controller.setHistory(username);
         controller.setUserInfo("Hello, "+ username);
         primaryStage.show();
     }
@@ -67,6 +71,19 @@ public class NetworkChat extends Application {
         authStage.show();
     }
 
+    public void initAndShowNewUserWindow() throws IOException {
+        FXMLLoader userLoader=new FXMLLoader();
+        userLoader.setLocation(NetworkChat.class.getResource("/views/newUser.fxml"));
+        Parent userParent=userLoader.load();
+        userStage=new Stage();
+        userStage.setTitle("Create new user window");
+        Scene userScene=new Scene(userParent);
+        userStage.setScene(userScene);
+        NewUserController newUserController=userLoader.getController();
+        newUserController.setNetwork(network);
+        userStage.show();
+    }
+
     public void initAndShowNewChatWindow() throws IOException {
         FXMLLoader chatLoader=new FXMLLoader();
         chatLoader.setLocation((NetworkChat.class.getResource("/views/newChat.fxml")));
@@ -77,9 +94,14 @@ public class NetworkChat extends Application {
         chatStage.setScene(chatScene);
         NewChatController chatController=chatLoader.getController();
         chatController.setNetwork(network);
-        chatController.listOfUsers.setItems(network.getCollectionOfChats().getUserNames());
+        chatController.setListUsers();
         chatStage.show();
     }
+
+    public void closeNewChatWindow(){
+        chatStage.close();
+    }
+    public void closeNewUserWindow() {userStage.close();}
 
 
     public static void main(String[] args) {
@@ -94,6 +116,15 @@ public class NetworkChat extends Application {
         alert.setContentText(errorDetails);
         alert.showAndWait();
     }
+
+    public static void showNetworkInfoMessage(String message) {
+        System.out.println(message);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("INFO");
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
 
 
 }

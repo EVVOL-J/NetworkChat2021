@@ -7,8 +7,6 @@ import command.Command;
 import command.data.TypeOfCommand;
 import command.data.list.*;
 import javafx.application.Platform;
-
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -23,6 +21,7 @@ public class Network {
     private final String address;
     private NetworkChat networkChat;
     private CollectionOfChatsAndUsers collectionOfChats;
+
 
 
     public Network(NetworkChat networkChat) {
@@ -57,9 +56,9 @@ public class Network {
         return collectionOfChats;
     }
 
-    public boolean write(String username, String message) {
+    public boolean write(Integer chatID, String message) {
         try {
-            out.writeObject(Command.privateMassageCommand(username,message));
+            out.writeObject(Command.massageCommand(chatID,message));
         } catch (IOException e) {
             NetworkChat.showNetworkError("Ошибка отравки сообщения", "Сервер упал");
             return false;
@@ -74,34 +73,34 @@ public class Network {
                     Command command=(Command)in.readObject();
                     TypeOfCommand type = command.getType();
                     switch (type) {
-                        case USER_SET_MESSAGE:{
-                            UserSetCommandData data=(UserSetCommandData)  command.getData();
+                        case USER_NAMES:{
+                            UserSetCommandData data= (UserSetCommandData) command.getData();
                             Platform.runLater(()->controller.reloadUserList(data.getUserNames()));
-                            System.out.println(getCollectionOfChats().getUserNames().toString());
                             break;
                         }
                         case USER_CHATS:{
                             ChatsOfUserCommandData data=(ChatsOfUserCommandData) command.getData();
-                            Platform.runLater(()->controller.reloadChatList(data.getOnlineUserName()));
+                            Platform.runLater(()->controller.reloadChatList(data.getMapChats()));
                             break;
                         }
-                        case PRIVATE_MESSAGE: {
-                            PrivateMassageCommandData data = (PrivateMassageCommandData) command.getData();
-                            Platform.runLater(() -> controller.appendMessage(data.getUsername()+": " +data.getMessage()));
+                        case CHAT_MESSAGE: {
+                            MassageCommandData data = (MassageCommandData) command.getData();
+                            Platform.runLater(() -> controller.appendMessage(data.getChatID(),data.getMessage()));
+
                             break;
                         }
                         case ERROR_MESSAGE: {
                             ErrorMassageCommandData data = (ErrorMassageCommandData) command.getData();
-                            networkChat.showNetworkError(data.getTypeErr(), data.getMessage());
+                            NetworkChat.showNetworkError(data.getTypeErr(), data.getMessage());
                             break;
                         }
                         case INFO_MESSAGE: {
                             InfoMessageCommandData data = (InfoMessageCommandData) command.getData();
-                            Platform.runLater(() -> controller.appendMessage("Info message from server"+data.getMessage()));
+                            networkChat.showNetworkInfoMessage(data.getMessage());
                             break;
                         }
                         default: {
-                            networkChat.showNetworkError("Ошибка комманд", "Пришла неизвестная команда");
+                            NetworkChat.showNetworkError("Ошибка комманд", "Пришла неизвестная команда");
                             break;
                         }
                     }
@@ -118,19 +117,26 @@ public class Network {
         Platform.runLater(() -> thread.start());
     }
 
-    public String sendAuthCommand(String login, String password) {
+
+
+    public String sendCommand(Command writeCommand) {
         try {
-            out.writeObject(Command.authCommand(login, password));
-            Command command = (Command) in.readObject();
-            TypeOfCommand type = command.getType();
+            out.writeObject(writeCommand);
+            Command readCommand = (Command) in.readObject();
+            TypeOfCommand type = readCommand.getType();
             switch (type) {
                 case AUTH_OK: {
-                    AuthOkCommandData data = (AuthOkCommandData) command.getData();
+                    AuthOkCommandData data = (AuthOkCommandData) readCommand.getData();
                     return data.getUsername();
                 }
                 case ERROR_MESSAGE: {
-                    ErrorMassageCommandData data = (ErrorMassageCommandData) command.getData();
+                    ErrorMassageCommandData data = (ErrorMassageCommandData) readCommand.getData();
                     networkChat.showNetworkError(data.getTypeErr(), data.getMessage());
+                    return null;
+                }
+                case INFO_MESSAGE:{
+                    InfoMessageCommandData data=(InfoMessageCommandData) readCommand.getData();
+                    networkChat.showNetworkInfoMessage(data.getMessage());
                     return null;
                 }
                 default: {
@@ -151,4 +157,5 @@ public class Network {
     }
 
 
-}
+
+  }

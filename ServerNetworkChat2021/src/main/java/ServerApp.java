@@ -7,7 +7,9 @@ import java.io.IOException;
 public class ServerApp {
     private static final int PORT = 8189;
 
+
     public static void main(String[] args) {
+
         Network network = new Network();
         try {
             int port=PORT;
@@ -19,5 +21,6 @@ public class ServerApp {
             System.out.println("Ошибка создания сервера");
             e.printStackTrace();
         }
+
     }
 }

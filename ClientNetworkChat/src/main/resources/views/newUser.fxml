@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chat.controllers.NewUserController">
+   <children>
+      <VBox layoutX="88.0" layoutY="25.0" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label text="Создание нового пользователя" textFill="#2c17e5">
+               <font>
+                  <Font name="Cambria Bold" size="26.0" />
+               </font>
+               <VBox.margin>
+                  <Insets left="5.0" />
+               </VBox.margin>
+            </Label>
+            <Label text="Имя пользователя:">
+               <font>
+                  <Font size="19.0" />
+               </font>
+               <VBox.margin>
+                  <Insets left="5.0" />
+               </VBox.margin>
+            </Label>
+            <TextField fx:id="name" promptText="Имя пользователя">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="40.0" top="5.0" />
+               </VBox.margin>
+               <font>
+                  <Font size="19.0" />
+               </font>
+            </TextField>
+            <Label text="Логин пользователя:">
+               <font>
+                  <Font size="19.0" />
+               </font>
+               <VBox.margin>
+                  <Insets left="5.0" />
+               </VBox.margin>
+            </Label>
+            <TextField fx:id="login" promptText="Логин пользователя">
+               <font>
+                  <Font size="19.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="40.0" top="5.0" />
+               </VBox.margin>
+            </TextField>
+            <Label text="Пароль:">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <VBox.margin>
+                  <Insets left="5.0" />
+               </VBox.margin>
+            </Label>
+            <PasswordField fx:id="password" promptText="Пароль">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="40.0" top="5.0" />
+               </VBox.margin>
+               <font>
+                  <Font size="19.0" />
+               </font>
+            </PasswordField>
+            <Label text="Повторите пароль:">
+               <font>
+                  <Font size="19.0" />
+               </font>
+               <VBox.margin>
+                  <Insets left="5.0" />
+               </VBox.margin>
+            </Label>
+            <PasswordField fx:id="rePassword" promptText="Пароль">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="40.0" top="5.0" />
+               </VBox.margin>
+               <font>
+                  <Font size="19.0" />
+               </font>
+            </PasswordField>
+            <Button mnemonicParsing="false" onAction="#createNewUser" text="Создать">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="150.0" right="100.0" top="5.0" />
+               </VBox.margin>
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Button>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

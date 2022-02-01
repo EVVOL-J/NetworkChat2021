@@ -3,16 +3,16 @@ package command.data.list;
 import java.io.Serializable;
 
 public class PrivateMassageCommandData implements Serializable {
-    private final String username;
+    private final String name;
     private final String message;
 
-    public PrivateMassageCommandData(String username, String message) {
-        this.username = username;
+    public PrivateMassageCommandData(String name, String message) {
+        this.name = name;
         this.message = message;
     }
 
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
     public String getMessage() {

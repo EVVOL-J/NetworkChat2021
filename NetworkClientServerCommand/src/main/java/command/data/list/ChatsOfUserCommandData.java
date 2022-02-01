@@ -1,18 +1,19 @@
 package command.data.list;
 
-import command.data.Chat;
 
 import java.io.Serializable;
-import java.util.List;
+
+import java.util.Map;
+
 
 public class ChatsOfUserCommandData implements Serializable {
-    private final List<Chat> chatsOfUser;
+    private final Map<Integer, String> mapChats;
 
-    public ChatsOfUserCommandData(List<Chat> chatsOfUser) {
-        this.chatsOfUser=chatsOfUser;
+    public ChatsOfUserCommandData(Map<Integer, String> mapChats) {
+        this.mapChats = mapChats;
     }
 
-    public List<Chat> getOnlineUserName() {
-        return chatsOfUser;
+    public Map<Integer, String> getMapChats() {
+        return mapChats;
     }
 }

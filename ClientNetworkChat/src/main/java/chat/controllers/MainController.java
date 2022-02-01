@@ -1,20 +1,23 @@
 package chat.controllers;
 
 
+import chat.history.History;
 import chat.network.Network;
-import command.data.Chat;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 
 public class MainController {
 
     private Network network;
+    private History history;
+    private String selectChat = "";
 
     @FXML
     private Label userInfo;
@@ -26,52 +29,72 @@ public class MainController {
     private TextField textField;
 
     @FXML
-    private ListView userList;
+    private ListView chatList;
 
     @FXML
     private Button sendButton;
 
 
-
-
-
     public void initialize() {
+
         textField.setOnAction(actionEvent -> sendMessage());
         sendButton.setOnAction(actionEvent -> sendMessage());
-
     }
 
     public void sendMessage() {
-        String message=textField.getText()+"\n";
-       // userList.getSelectionModel().getSelectedItem();
-        //appendMessage(message);
-        network.write(null, message);
+        String message = textField.getText();
+        Integer id = null;
+        message.strip();
+        List<String> chat = chatList.getSelectionModel().getSelectedItems();
+        if (!chat.isEmpty()) {
+            if (message != null || !message.isEmpty())
+                id = network.getCollectionOfChats().getChatIDByTitle(chat.get(0));
+            if (id != null)
+                network.write(id, message + '\n');
+        }
+        textField.clear();
     }
 
-    public void appendMessage(String message){
-        textArea.appendText(message);
-        textField.clear();
+    public void appendMessage(Integer chatID, String message) {
+        if (network.getCollectionOfChats().getChatNameById(chatID).equals(selectChat))
+            textArea.appendText(message);
+        history.writeMessageToChat(network.getCollectionOfChats().getChatNameById(chatID), message);
     }
 
     @FXML
     public void newInfo() {
-        userInfo.setText(String.valueOf(userList.getSelectionModel().getSelectedItems()));
+        String selectedItem = chatList.getSelectionModel().getSelectedItems().get(0).toString();
+        if (!selectedItem.equals(selectChat)) {
+            selectChat = selectedItem;
+            ArrayList<String> chatHistory = history.readLastOneHundredMessages(selectedItem);
+            textArea.clear();
+            for (String message : chatHistory) {
+                textArea.appendText(message);
+            }
+            userInfo.setText(selectedItem);
+        }
     }
 
     public void setNetwork(Network network) {
         this.network = network;
     }
 
+    public void setHistory(String username) {
+        this.history = new History(username);
+    }
 
     public void setUserInfo(String userMessage) {
         userInfo.setText(userMessage);
     }
 
-    public void reloadChatList(List<Chat> chats){
+    public void reloadChatList(Map<Integer, String> chats) {
         network.getCollectionOfChats().insertChats(chats);
-        userList.setItems(network.getCollectionOfChats().getPersonList());}
+        chatList.setItems(network.getCollectionOfChats().getChatList());
+        chatList.getSelectionModel().select(0);
+        newInfo();
+    }
 
-    public void reloadUserList(Set<String> userNames){
+    public void reloadUserList(Map<Integer, String> userNames) {
         network.getCollectionOfChats().setUserNames(userNames);
     }
 

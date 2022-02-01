@@ -1,16 +1,17 @@
 package command.data.list;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.Map;
 
 public class UserSetCommandData implements Serializable {
-    Set<String> userNames;
+    Map<Integer,String> userNames;
 
-    public UserSetCommandData(Set<String> userNames) {
+    public UserSetCommandData(Map<Integer,String> userNames) {
         this.userNames = userNames;
     }
 
-    public Set<String> getUserNames() {
+    public Map<Integer,String> getUserNames() {
+
         return userNames;
     }
 }
